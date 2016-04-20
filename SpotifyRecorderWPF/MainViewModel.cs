@@ -78,6 +78,16 @@ namespace SpotifyRecorderWPF
             }
         }
 
+
+        public ICommand StartRecordingCommand
+        {
+            get { return _startRecordingCommand ?? ( _startRecordingCommand = new SimpleCommand ( StartRecording, ( ) => !RecordingStarted ) ); }
+        }
+        public ICommand StopRecordingCommand
+        {
+            get { return _stopRecordingCommand ?? (_stopRecordingCommand = new SimpleCommand ( StopRecording, ( ) => RecordingStarted ) ); }
+        }
+
         public List<SpotifyWav> RecordedFiles { get; set; }
 
         public ICommand SelectFolderCommand { get; }
@@ -89,6 +99,8 @@ namespace SpotifyRecorderWPF
         private string _outputFolder;
         private bool _recordingStarted;
         private bool _isSkipCommertials;
+        private ICommand _startRecordingCommand;
+        private ICommand _stopRecordingCommand;
 
 
         public MainViewModel ( )
@@ -153,6 +165,30 @@ namespace SpotifyRecorderWPF
         {
             PropertyChanged?.Invoke ( this, new PropertyChangedEventArgs ( propertyName ) );
         }
+    }
+
+    public class SimpleCommand : ICommand
+    {
+        private readonly Action _execAction;
+        private readonly Func<bool> _canExecute;
+
+        public SimpleCommand (Action execAction, Func<bool> canExecute )
+        {
+            _execAction = execAction;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute ( object parameter )
+        {
+            return _canExecute ( );
+        }
+
+        public void Execute ( object parameter )
+        {
+            _execAction ( );
+        }
+
+        public event EventHandler CanExecuteChanged;
     }
 
     public class SelectFolderCommand : ICommand

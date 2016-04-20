@@ -22,8 +22,8 @@
         <Label x:Name="label_Copy2" Content="Skip commertials" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label1" Content="Current Song" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top"/>
         <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="149" Margin="10,161,0,0" VerticalAlignment="Top" Width="497"/>
-        <Button x:Name="button1" Content="Start" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
-        <Button x:Name="button2" Content="Stop" HorizontalAlignment="Left" Margin="432,130,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.431" Click="button2_Click"/>
+        <Button x:Name="button1" Content="Start" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Width="75" Command="{Binding StartRecordingCommand}"/>
+        <Button x:Name="button2" Content="Stop" HorizontalAlignment="Left" Margin="432,130,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.431" Command="{Binding StopRecordingCommand}"/>
         <Label x:Name="label2" Content="{Binding CurrentSong}" HorizontalAlignment="Left" Margin="111,130,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.558,0.56"/>
         <CheckBox x:Name="checkBox" IsChecked="{Binding IsSkipCommertials}" Content="" HorizontalAlignment="Left" Margin="111,104,0,0" VerticalAlignment="Top"/>
 
