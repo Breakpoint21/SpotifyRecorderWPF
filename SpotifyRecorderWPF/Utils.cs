@@ -13,7 +13,7 @@ namespace SpotifyRecorderWPF
         {
             var cleanSongName = Path.Combine(currentSong, ".wav");
             Path.GetInvalidFileNameChars().ToList().ForEach(x => cleanSongName = cleanSongName.Replace(x, '_'));
-            return Path.Combine ( outputDirectory.FullName, cleanSongName );
+            return Path.Combine ( outputDirectory.FullName, cleanSongName);
         }
     }
 }

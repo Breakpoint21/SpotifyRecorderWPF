@@ -11,19 +11,21 @@
         <local:MainViewModel />
     </Window.DataContext>
     <Grid>
-        <ComboBox x:Name="comboBox" ItemsSource="{Binding MmDevices}" DisplayMemberPath="FriendlyName" SelectedValuePath="ID" SelectedValue="{Binding SelectedMmDeviceId}" HorizontalAlignment="Left" Margin="111,10,0,0" VerticalAlignment="Top" Width="396"/>
+        
+        <ComboBox x:Name="comboBox" ItemsSource="{Binding MmDevices}" DisplayMemberPath="FriendlyName" SelectedValuePath="ID" SelectedValue="{Binding SelectedMmDeviceId}" IsEnabled="{Binding RecordingStarted}" HorizontalAlignment="Left" Margin="111,10,10,0" VerticalAlignment="Top" Width="396" HorizontalContentAlignment="Stretch"/>
         <Label x:Name="label" Content="Device" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Copy" Content="Bitrate" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Copy1" Content="Output Path" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1" ItemsSource="{Binding Bitrates}" SelectedValue="{Binding SelectedBitrate}" HorizontalAlignment="Left" Margin="111,37,0,0" VerticalAlignment="Top" Width="396"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="111,63,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="362"/>
-        <Button x:Name="button" Content="..." HorizontalAlignment="Left" Margin="480,63,0,0" VerticalAlignment="Top" Width="27"/>
-        <Label x:Name="label_Copy2" Content="Skip" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1" ItemsSource="{Binding Bitrates}" SelectedValue="{Binding SelectedBitrate}" HorizontalAlignment="Left" IsReadOnly="{Binding RecordingStarted}" Margin="111,41,0,0" VerticalAlignment="Top" Width="396" HorizontalContentAlignment="Stretch"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="111,71,0,0" TextWrapping="Wrap" Text="{Binding OutputFolder}" IsReadOnly="{Binding RecordingStarted}" VerticalAlignment="Top" Width="362"/>
+        <Button x:Name="button" Content="..." Command="{Binding SelectFolderCommand}" HorizontalAlignment="Left" Margin="480,71,0,0" VerticalAlignment="Top" Width="27"/>
+        <Label x:Name="label_Copy2" Content="Skip commertials" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label1" Content="Current Song" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top"/>
         <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="149" Margin="10,161,0,0" VerticalAlignment="Top" Width="497"/>
         <Button x:Name="button1" Content="Start" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
-        <Button x:Name="button2" Content="Stop" HorizontalAlignment="Left" Margin="432,130,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.431"/>
+        <Button x:Name="button2" Content="Stop" HorizontalAlignment="Left" Margin="432,130,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.431" Click="button2_Click"/>
         <Label x:Name="label2" Content="{Binding CurrentSong}" HorizontalAlignment="Left" Margin="111,130,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.558,0.56"/>
+        <CheckBox x:Name="checkBox" IsChecked="{Binding IsSkipCommertials}" Content="" HorizontalAlignment="Left" Margin="111,104,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

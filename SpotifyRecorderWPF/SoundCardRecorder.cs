@@ -12,7 +12,6 @@ namespace SpotifyRecorderWPF
 {
     public class SoundCardRecorder
     {
-        private readonly MMDevice _device;
         private IWaveIn _waveIn;
         private WaveFileWriter _writer;
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -24,9 +23,8 @@ namespace SpotifyRecorderWPF
         //public string Song { get; set; }
         //public TimeSpan Duration { get { return _stopwatch.Elapsed; } }
 
-        public SoundCardRecorder(MMDevice device, DirectoryInfo outputDirectory)
+        public SoundCardRecorder(DirectoryInfo outputDirectory)
         {
-            _device = device;
             _outputDirectory = outputDirectory;
         }
 
@@ -62,14 +60,23 @@ namespace SpotifyRecorderWPF
         {
             if ( _waveIn != null ) Stop ( );
 
-            _currentSong = song;
-            Console.WriteLine(_device.FriendlyName);
-            _waveIn = new WasapiCapture(device);
-            _writer = new WaveFileWriter(Utils.GetWavFileName(_outputDirectory, _currentSong), _waveIn.WaveFormat);
-            _waveIn.DataAvailable += OnDataAvailable;
-            _waveIn.StartRecording();
-            _stopwatch.Reset();
-            _stopwatch.Start();
+            try
+            {
+                _currentSong = song;
+                _waveIn = new WasapiCapture(device);
+                _writer = new WaveFileWriter(Utils.GetWavFileName(_outputDirectory, _currentSong), _waveIn.WaveFormat);
+                _waveIn.DataAvailable += OnDataAvailable;
+                _waveIn.StartRecording();
+                _stopwatch.Reset();
+                _stopwatch.Start();
+            }
+            catch ( Exception )
+            {
+                
+                throw;
+            }
+
+            
         }
 
         public SpotifyWav Stop ( )
