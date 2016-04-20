@@ -81,11 +81,11 @@ namespace SpotifyRecorderWPF
 
         public ICommand StartRecordingCommand
         {
-            get { return _startRecordingCommand ?? ( _startRecordingCommand = new SimpleCommand ( StartRecording, ( ) => !RecordingStarted ) ); }
+            get { return _startRecordingCommand ?? ( _startRecordingCommand = new RelayCommand ( StartRecording, ( ) => !RecordingStarted ) ); }
         }
         public ICommand StopRecordingCommand
         {
-            get { return _stopRecordingCommand ?? (_stopRecordingCommand = new SimpleCommand ( StopRecording, ( ) => RecordingStarted ) ); }
+            get { return _stopRecordingCommand ?? (_stopRecordingCommand = new RelayCommand ( StopRecording, ( ) => RecordingStarted ) ); }
         }
 
         public List<SpotifyWav> RecordedFiles { get; set; }
@@ -167,12 +167,12 @@ namespace SpotifyRecorderWPF
         }
     }
 
-    public class SimpleCommand : ICommand
+    public class RelayCommand : ICommand
     {
         private readonly Action _execAction;
         private readonly Func<bool> _canExecute;
 
-        public SimpleCommand (Action execAction, Func<bool> canExecute )
+        public RelayCommand (Action execAction, Func<bool> canExecute )
         {
             _execAction = execAction;
             _canExecute = canExecute;
@@ -187,8 +187,19 @@ namespace SpotifyRecorderWPF
         {
             _execAction ( );
         }
+        
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
 
-        public event EventHandler CanExecuteChanged;
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
     }
 
     public class SelectFolderCommand : ICommand
@@ -216,6 +227,17 @@ namespace SpotifyRecorderWPF
             }
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
     }
 }
