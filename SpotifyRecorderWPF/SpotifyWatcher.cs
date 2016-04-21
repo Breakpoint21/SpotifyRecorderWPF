@@ -50,7 +50,7 @@ namespace SpotifyRecorderWPF
     {
         public SpotifyTrackChanged ( string song )
         {
-            Song = song;
+            Song = song?.Trim();
         }
 
         public string Song { get; }

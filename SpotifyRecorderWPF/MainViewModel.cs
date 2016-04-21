@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using NAudio.CoreAudioApi;
 using SpotifyRecorderWPF.Annotations;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace SpotifyRecorderWPF
 {
@@ -88,7 +90,7 @@ namespace SpotifyRecorderWPF
             get { return _stopRecordingCommand ?? (_stopRecordingCommand = new RelayCommand ( StopRecording, ( ) => RecordingStarted ) ); }
         }
 
-        public List<SpotifyWav> RecordedFiles { get; set; }
+        public ObservableCollection<SpotifyWav> RecordedFiles { get; set; }
 
         public ICommand SelectFolderCommand { get; }
 
@@ -102,10 +104,13 @@ namespace SpotifyRecorderWPF
         private ICommand _startRecordingCommand;
         private ICommand _stopRecordingCommand;
 
+        private object _lock = new object();
 
         public MainViewModel ( )
         {
-            RecordedFiles = new List< SpotifyWav > ();
+            
+            RecordedFiles = new ObservableCollection< SpotifyWav > ();
+            BindingOperations.EnableCollectionSynchronization(RecordedFiles, _lock);
             Bitrates = new List< int > { 96, 128, 160, 192, 320 };
             
             MmDevices = _deviceEnum.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).ToList();
@@ -152,9 +157,14 @@ namespace SpotifyRecorderWPF
             if ( RecordingStarted )
             {
                 RecordingStarted = false;
-                _recorder?.Stop();
+                var file = _recorder?.Stop();
                 _recorder?.Dispose();
                 _recorder = null;
+
+                if (file != null && file.WavFile.Exists)
+                {
+                    file.WavFile.Delete();
+                }
             }
         }
 
