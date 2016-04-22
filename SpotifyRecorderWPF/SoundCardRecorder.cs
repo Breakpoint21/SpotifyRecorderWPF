@@ -18,27 +18,11 @@ namespace SpotifyRecorderWPF
 
         private string _currentSong;
         private readonly DirectoryInfo _outputDirectory;
-
-        //public string FilePath { get; set; }
-        //public string Song { get; set; }
-        //public TimeSpan Duration { get { return _stopwatch.Elapsed; } }
-
+        
         public SoundCardRecorder(DirectoryInfo outputDirectory)
         {
             _outputDirectory = outputDirectory;
         }
-
-        //public SoundCardRecorder(MMDevice device, string filePath, string song)
-        //{
-        //    _device = device;
-        //    FilePath = filePath;
-        //    Song = song;
-
-        //    _waveIn = new WasapiCapture(_device);
-        //    _writer = new WaveFileWriter(FilePath, _waveIn.WaveFormat);
-        //    _waveIn.DataAvailable += OnDataAvailable;
-
-        //}
 
         public void Dispose()
         {
@@ -101,20 +85,6 @@ namespace SpotifyRecorderWPF
 
             return result;
         }
-
-        //public void Start()
-        //{
-        //    _waveIn.StartRecording();
-        //    _stopwatch.Reset();
-        //    _stopwatch.Start();
-        //}
-
-        //public void Stop()
-        //{
-        //    _stopwatch.Stop();
-        //    _waveIn?.StopRecording();
-        //    _writer?.Close();
-        //}
     }
 
     public class SpotifyWav
