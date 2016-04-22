@@ -25,18 +25,11 @@ namespace SpotifyRecorderWPF
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var mainViewModel = DataContext as MainViewModel;
 
-            mainViewModel?.StartRecording();
-        }
-
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-            var mainViewModel = DataContext as MainViewModel;
-
-            mainViewModel?.StopRecording();
+            mainViewModel?.OnClose();
         }
     }
 }

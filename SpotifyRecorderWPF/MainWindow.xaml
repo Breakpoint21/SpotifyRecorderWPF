@@ -6,22 +6,51 @@
         xmlns:local="clr-namespace:SpotifyRecorderWPF"
         mc:Ignorable="d"
         Icon="icon.ico"
-        Title="MainWindow" Height="350" Width="525">
+        Title="SpotifyRecorder" Height="350" Width="525" MinWidth="500" MinHeight="300" Closing="Window_Closing">
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
     <Grid>
-
-        <ComboBox x:Name="comboBox" ItemsSource="{Binding MmDevices}" DisplayMemberPath="FriendlyName" SelectedValuePath="ID" SelectedValue="{Binding SelectedMmDeviceId}" IsReadOnly="{Binding RecordingStarted}" HorizontalAlignment="Left" Margin="111,10,10,0" VerticalAlignment="Top" Width="396" HorizontalContentAlignment="Stretch"/>
-        <Label x:Name="label" Content="Device" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label_Copy" Content="Bitrate" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label_Copy1" Content="Output Path" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1" ItemsSource="{Binding Bitrates}" SelectedValue="{Binding SelectedBitrate}" HorizontalAlignment="Left" IsReadOnly="{Binding RecordingStarted}" Margin="111,41,0,0" VerticalAlignment="Top" Width="396" HorizontalContentAlignment="Stretch"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="111,71,0,0" TextWrapping="Wrap" Text="{Binding OutputFolder}" IsReadOnly="{Binding RecordingStarted}" VerticalAlignment="Top" Width="362"/>
-        <Button x:Name="button" Content="..." Command="{Binding SelectFolderCommand}" HorizontalAlignment="Left" Margin="480,71,0,0" VerticalAlignment="Top" Width="27"/>
-        <Label x:Name="label_Copy2" Content="Skip commertials" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label1" Content="Current Song" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="149" Margin="10,161,0,0" VerticalAlignment="Top" Width="497" ItemsSource="{Binding RecordedFiles}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="cmbDevice" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding MmDevices}" DisplayMemberPath="FriendlyName" SelectedValuePath="ID" SelectedValue="{Binding SelectedMmDeviceId}" IsReadOnly="{Binding RecordingStarted}" Margin="10,0" VerticalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch"/>
+        <Label x:Name="lblDevice" Grid.Row="0" Grid.Column="0" Content="Device" HorizontalAlignment="Left" Margin="10,0" VerticalAlignment="Center"/>
+        <Label x:Name="lblBitrate" Grid.Row="1" Grid.Column="0" Content="Bitrate" HorizontalAlignment="Left" Margin="10,0" VerticalAlignment="Center"/>
+        <Label x:Name="lblOutputPath" Grid.Row="2" Grid.Column="0" Content="Output Path" HorizontalAlignment="Left" Margin="10,0" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cmbBitrate" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Bitrates}" SelectedValue="{Binding SelectedBitrate}" IsReadOnly="{Binding RecordingStarted}" Margin="10,0,10,0" VerticalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch"/>
+        <Grid Grid.Row="2" Grid.Column="1" Width="Auto" Margin="10,0" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="27" />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="txtOutputPath" Grid.Column="0" HorizontalAlignment="Stretch" Height="23" Margin="0,0,10,0" TextWrapping="Wrap" VerticalContentAlignment="Center" Text="{Binding OutputFolder}" IsReadOnly="{Binding RecordingStarted}" VerticalAlignment="Center" Width="Auto"/>
+                <Button x:Name="btnOutputPath" Grid.Column="1" Content="..." Command="{Binding SelectFolderCommand}" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="27"/>
+        </Grid>
+        <Label x:Name="lblSkipCommertials" Grid.Row="3" Grid.Column="0" Content="Skip commertials" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        <CheckBox x:Name="chkSkipCommertials" Grid.Row="3" Grid.Column="1" IsChecked="{Binding IsSkipCommertials}" Content="" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        <Label x:Name="lblCurrentSong" Grid.Column="0" Grid.Row="4" Content="Current Song" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        
+        <Grid Grid.Row="4" Grid.Column="1" Margin="0,0,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="85" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnStartRec" Grid.Column="1" Content="Start" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Width="75" Command="{Binding StartRecordingCommand}"/>
+            <Button x:Name="btnStopRec" Grid.Column="2" Content="Stop" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="75" RenderTransformOrigin="0.493,0.431" Command="{Binding StopRecordingCommand}" IsEnabled="{Binding }"/>
+            <Label x:Name="lblPlayingSong" Grid.Column="0" Content="{Binding CurrentSong}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
+        </Grid>
+        <ListBox x:Name="listRecordedFiles" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Height="Auto" Margin="10,10" VerticalAlignment="Stretch" Width="Auto" ItemsSource="{Binding RecordedFiles}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -30,10 +59,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button x:Name="button1" Content="Start" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Width="75" Command="{Binding StartRecordingCommand}"/>
-        <Button x:Name="button2" Content="Stop" HorizontalAlignment="Left" Margin="432,130,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.431" Command="{Binding StopRecordingCommand}" IsEnabled="{Binding }"/>
-        <Label x:Name="label2" Content="{Binding CurrentSong}" HorizontalAlignment="Left" Margin="111,130,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.558,0.56"/>
-        <CheckBox x:Name="checkBox" IsChecked="{Binding IsSkipCommertials}" Content="" HorizontalAlignment="Left" Margin="111,104,0,0" VerticalAlignment="Top"/>
+        
 
     </Grid>
 </Window>

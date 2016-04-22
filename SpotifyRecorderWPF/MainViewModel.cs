@@ -19,9 +19,30 @@ namespace SpotifyRecorderWPF
     {
         public List<MMDevice> MmDevices { get; set; }
         public List<int> Bitrates { get; set; }
-        public int SelectedBitrate { get; set; }
+        private int _selectedBitrate;
 
-        public string SelectedMmDeviceId { get; set; }
+        public int SelectedBitrate
+        {
+            get { return _selectedBitrate; }
+            set
+            {
+                if (value == _selectedBitrate) return;
+                _selectedBitrate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedMmDeviceId;
+        public string SelectedMmDeviceId
+        {
+            get { return _selectedMmDeviceId; }
+            set
+            {
+                if (value == _selectedMmDeviceId) return;
+                _selectedMmDeviceId = value;
+                OnPropertyChanged();
+            }
+        }
 
         public MMDevice SelectedMmDevice
         {
@@ -119,6 +140,8 @@ namespace SpotifyRecorderWPF
             _watcher.Start();
 
             SelectFolderCommand = new SelectFolderCommand(this);
+
+            LoadSettings();
         }
 
         private void SongChanged ( object sender, SpotifyTrackChanged spotifyTrackChanged )
@@ -166,6 +189,35 @@ namespace SpotifyRecorderWPF
                     file.WavFile.Delete();
                 }
             }
+        }
+
+        public void OnClose()
+        {
+            SaveSettings();
+        }
+
+        private void SaveSettings()
+        {
+            Properties.Settings.Default.SelectedBitrate = SelectedBitrate;
+            Properties.Settings.Default.DeviceName = SelectedMmDevice.FriendlyName;
+            Properties.Settings.Default.OutputPath = OutputFolder;
+            Properties.Settings.Default.SkipCommertials = IsSkipCommertials;
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void LoadSettings()
+        {
+            SelectedBitrate = Bitrates.Contains(Properties.Settings.Default.SelectedBitrate) ? Properties.Settings.Default.SelectedBitrate : 128;
+
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.DeviceName))
+            {
+                var selected = MmDevices.FirstOrDefault(x => x.FriendlyName == Properties.Settings.Default.DeviceName);
+                SelectedMmDeviceId = selected?.ID;
+            }
+
+            OutputFolder = Directory.Exists(Properties.Settings.Default.OutputPath) ? Properties.Settings.Default.OutputPath : null;
+            IsSkipCommertials = Properties.Settings.Default.SkipCommertials;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
