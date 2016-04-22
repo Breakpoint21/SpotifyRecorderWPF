@@ -67,6 +67,8 @@
     <Compile Include="Mp3Converter.cs" />
     <Compile Include="Mp3Tag.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Commands\SelectFolderCommand.cs" />
     <Compile Include="SoundCardRecorder.cs" />
     <Compile Include="SpotifyWatcher.cs" />
     <Compile Include="Utils.cs" />

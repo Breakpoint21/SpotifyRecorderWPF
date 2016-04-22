@@ -18,15 +18,19 @@ namespace SpotifyRecorderWPF
                 if (!File.Exists(wavFilePath))
                     return;
 
-                Process process = new Process();
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                Process process = new Process
+                {
+                    StartInfo =
+                    {
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        FileName = "lame.exe",
+                        Arguments = $"-b {bitrate} --tt \"{tag.Track}\" --ta \"{tag.Artist}\"  \"{wavFilePath}\" \"{Path.ChangeExtension ( wavFilePath, ".mp3" )}\"",
+                        WorkingDirectory = Path.GetDirectoryName ( typeof ( Mp3Converter ).Assembly.Location )
+                    }
+                };
                 
-                process.StartInfo.FileName = "lame.exe";
-                process.StartInfo.Arguments = $"-b {bitrate} --tt \"{tag.Track}\" --ta \"{tag.Artist}\"  \"{wavFilePath}\" \"{Path.ChangeExtension(wavFilePath, ".mp3")}\"";
-
-                process.StartInfo.WorkingDirectory = Path.GetDirectoryName(typeof(Mp3Converter).Assembly.Location);
                 process.Start();
                 process.WaitForExit(20000);
                 if (!process.HasExited)

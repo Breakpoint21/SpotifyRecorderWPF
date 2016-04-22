@@ -6,21 +6,22 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Input;
 using NAudio.CoreAudioApi;
 using SpotifyRecorderWPF.Annotations;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using SpotifyRecorderWPF.Commands;
 
 namespace SpotifyRecorderWPF
 {
     public class MainViewModel: INotifyPropertyChanged
     {
-        public List<MMDevice> MmDevices { get; set; }
-        public List<int> Bitrates { get; set; }
-        private int _selectedBitrate;
+        public List<MMDevice> MmDevices { get;  }
+        public List<int> Bitrates { get; }
+        public ObservableCollection<SpotifyWav> RecordedFiles { get; }
 
+        private int _selectedBitrate;
         public int SelectedBitrate
         {
             get { return _selectedBitrate; }
@@ -101,7 +102,10 @@ namespace SpotifyRecorderWPF
             }
         }
 
-
+        public ICommand SelectFolderCommand
+        {
+            get { return _selectFolderCommand ?? (_selectFolderCommand = new SelectFolderCommand(this)); }
+        }
         public ICommand StartRecordingCommand
         {
             get { return _startRecordingCommand ?? ( _startRecordingCommand = new RelayCommand ( StartRecording, ( ) => !RecordingStarted ) ); }
@@ -111,19 +115,15 @@ namespace SpotifyRecorderWPF
             get { return _stopRecordingCommand ?? (_stopRecordingCommand = new RelayCommand ( StopRecording, ( ) => RecordingStarted ) ); }
         }
 
-        public ObservableCollection<SpotifyWav> RecordedFiles { get; set; }
-
-        public ICommand SelectFolderCommand { get; }
-
         private readonly SpotifyWatcher _watcher = new SpotifyWatcher();
         private readonly MMDeviceEnumerator _deviceEnum = new MMDeviceEnumerator();
-
-        private SoundCardRecorder _recorder = null;
+        private SoundCardRecorder _recorder;
         private string _outputFolder;
         private bool _recordingStarted;
         private bool _isSkipCommertials;
         private ICommand _startRecordingCommand;
         private ICommand _stopRecordingCommand;
+        private ICommand _selectFolderCommand;
 
         private object _lock = new object();
 
@@ -138,9 +138,7 @@ namespace SpotifyRecorderWPF
 
             _watcher.SongChanged += SongChanged;
             _watcher.Start();
-
-            SelectFolderCommand = new SelectFolderCommand(this);
-
+            
             LoadSettings();
         }
 
@@ -209,13 +207,7 @@ namespace SpotifyRecorderWPF
         private void LoadSettings()
         {
             SelectedBitrate = Bitrates.Contains(Properties.Settings.Default.SelectedBitrate) ? Properties.Settings.Default.SelectedBitrate : 128;
-
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.DeviceName))
-            {
-                var selected = MmDevices.FirstOrDefault(x => x.FriendlyName == Properties.Settings.Default.DeviceName);
-                SelectedMmDeviceId = selected?.ID;
-            }
-
+            SelectedMmDeviceId = MmDevices.FirstOrDefault(x => x.FriendlyName == Properties.Settings.Default.DeviceName)?.ID;
             OutputFolder = Directory.Exists(Properties.Settings.Default.OutputPath) ? Properties.Settings.Default.OutputPath : null;
             IsSkipCommertials = Properties.Settings.Default.SkipCommertials;
         }
@@ -226,80 +218,6 @@ namespace SpotifyRecorderWPF
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this, new PropertyChangedEventArgs ( propertyName ) );
-        }
-    }
-
-    public class RelayCommand : ICommand
-    {
-        private readonly Action _execAction;
-        private readonly Func<bool> _canExecute;
-
-        public RelayCommand (Action execAction, Func<bool> canExecute )
-        {
-            _execAction = execAction;
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute ( object parameter )
-        {
-            return _canExecute ( );
-        }
-
-        public void Execute ( object parameter )
-        {
-            _execAction ( );
-        }
-        
-        public event EventHandler CanExecuteChanged
-        {
-            add
-            {
-                CommandManager.RequerySuggested += value;
-            }
-
-            remove
-            {
-                CommandManager.RequerySuggested -= value;
-            }
-        }
-    }
-
-    public class SelectFolderCommand : ICommand
-    {
-        private readonly MainViewModel _viewModel;
-        private readonly FolderBrowserDialog _folderBrowserDialog;
-
-        public SelectFolderCommand ( MainViewModel vm )
-        {
-            _viewModel = vm;
-            _folderBrowserDialog = new FolderBrowserDialog ( );
-        }
-
-        public bool CanExecute ( object parameter )
-        {
-            return !_viewModel.RecordingStarted;
-        }
-
-        public void Execute ( object parameter )
-        {
-            var dialogResult = _folderBrowserDialog.ShowDialog();
-            if ( dialogResult == DialogResult.OK )
-            {
-                _viewModel.OutputFolder = _folderBrowserDialog.SelectedPath;
-            }
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add
-            {
-                CommandManager.RequerySuggested += value;
-            }
-
-            remove
-            {
-                CommandManager.RequerySuggested -= value;
-            }
         }
     }
 }

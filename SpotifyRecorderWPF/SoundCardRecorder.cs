@@ -43,37 +43,25 @@ namespace SpotifyRecorderWPF
         public void Start ( string song, MMDevice device )
         {
             if ( _waveIn != null ) Stop ( );
-
-            try
-            {
-                _currentSong = song;
-                _waveIn = new WasapiCapture(device);
-                _writer = new WaveFileWriter(Utils.GetWavFileName(_outputDirectory, _currentSong), _waveIn.WaveFormat);
-                _waveIn.DataAvailable += OnDataAvailable;
-                _waveIn.StartRecording();
-                _stopwatch.Reset();
-                _stopwatch.Start();
-            }
-            catch ( Exception )
-            {
-                
-                throw;
-            }
-
             
+            _currentSong = song;
+            _waveIn = new WasapiCapture(device);
+            _writer = new WaveFileWriter(Utils.GetWavFileName(_outputDirectory, _currentSong), _waveIn.WaveFormat);
+            _waveIn.DataAvailable += OnDataAvailable;
+            _waveIn.StartRecording();
+            _stopwatch.Reset();
+            _stopwatch.Start();
         }
 
         public SpotifyWav Stop ( )
         {
             if ( _waveIn == null || _writer == null ) return null;
 
-            SpotifyWav result;
-
             _stopwatch.Stop();
             _waveIn.StopRecording();
             _waveIn.DataAvailable -= OnDataAvailable;
 
-            result = new SpotifyWav ( ) { Duration = _stopwatch.Elapsed, Song = _currentSong, WavFile = new FileInfo ( _writer.Filename ) };
+            var result = new SpotifyWav ( _stopwatch.Elapsed, new FileInfo ( _writer.Filename ), _currentSong );
 
             _waveIn.Dispose();
             _writer.Close();
@@ -89,9 +77,16 @@ namespace SpotifyRecorderWPF
 
     public class SpotifyWav
     {
-        public TimeSpan Duration { get; set; }
-        public FileInfo WavFile { get; set; }
-        public string Song { get; set; }
+        public SpotifyWav ( TimeSpan duration, FileInfo wavFile, string song )
+        {
+            Duration = duration;
+            WavFile = wavFile;
+            Song = song;
+        }
+
+        public TimeSpan Duration { get; }
+        public FileInfo WavFile { get; }
+        public string Song { get; }
 
     }
 }
