@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using System.Windows.Input;
+using SpotifyRecorderWPF.ViewModels;
 
 namespace SpotifyRecorderWPF.Commands
 {
