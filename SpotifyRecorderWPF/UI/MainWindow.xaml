@@ -23,36 +23,59 @@
             <ColumnDefinition Width="110" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ComboBox x:Name="CmbDevice" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding MmDevices}" DisplayMemberPath="FriendlyName" SelectedValuePath="ID" SelectedValue="{Binding SelectedMmDeviceId}" IsReadOnly="{Binding RecordingStarted}" Margin="10,0" VerticalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch"/>
-        <Label x:Name="LblDevice" Grid.Row="0" Grid.Column="0" Content="Device" HorizontalAlignment="Left" Margin="10,0" VerticalAlignment="Center"/>
-        <Label x:Name="LblBitrate" Grid.Row="1" Grid.Column="0" Content="Bitrate" HorizontalAlignment="Left" Margin="10,0" VerticalAlignment="Center"/>
-        <Label x:Name="LblOutputPath" Grid.Row="2" Grid.Column="0" Content="Output Path" HorizontalAlignment="Left" Margin="10,0" VerticalAlignment="Center"/>
-        <ComboBox x:Name="CmbBitrate" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Bitrates}" SelectedValue="{Binding SelectedBitrate}" IsReadOnly="{Binding RecordingStarted}" Margin="10,0,10,0" VerticalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch"/>
+        <ComboBox x:Name="CmbDevice" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding MmDevices}"
+                  DisplayMemberPath="FriendlyName" SelectedValuePath="ID"
+                  SelectedValue="{Binding SelectedMmDeviceId, ValidatesOnDataErrors=True}"
+                  IsReadOnly="{Binding RecordingStarted}" Margin="10,0" VerticalAlignment="Center" Width="Auto"
+                  HorizontalContentAlignment="Stretch" />
+        <Label x:Name="LblDevice" Grid.Row="0" Grid.Column="0" Content="Device" HorizontalAlignment="Left"
+               Margin="10,0" VerticalAlignment="Center" />
+        <Label x:Name="LblBitrate" Grid.Row="1" Grid.Column="0" Content="Bitrate" HorizontalAlignment="Left"
+               Margin="10,0" VerticalAlignment="Center" />
+        <Label x:Name="LblOutputPath" Grid.Row="2" Grid.Column="0" Content="Output Path" HorizontalAlignment="Left"
+               Margin="10,0" VerticalAlignment="Center" />
+        <ComboBox x:Name="CmbBitrate" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Bitrates}"
+                  SelectedValue="{Binding SelectedBitrate}" IsReadOnly="{Binding RecordingStarted}" Margin="10,0,10,0"
+                  VerticalAlignment="Center" Width="Auto" HorizontalContentAlignment="Stretch" />
         <Grid Grid.Row="2" Grid.Column="1" Width="Auto" Margin="10,0" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="27" />
-                </Grid.ColumnDefinitions>
-            <TextBox x:Name="TxtOutputPath" Grid.Column="0" HorizontalAlignment="Stretch" Height="23" Margin="0,0,10,0" TextWrapping="Wrap" VerticalContentAlignment="Center" Text="{Binding OutputFolder, ValidatesOnDataErrors=True}" IsReadOnly="{Binding RecordingStarted}" VerticalAlignment="Center" Width="Auto" ToolTip="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}">
-                
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="27" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="TxtOutputPath" Grid.Column="0" HorizontalAlignment="Stretch" Height="23" Margin="0,0,10,0"
+                     TextWrapping="Wrap" VerticalContentAlignment="Center"
+                     Text="{Binding OutputFolder, ValidatesOnDataErrors=True}" IsReadOnly="{Binding RecordingStarted}"
+                     VerticalAlignment="Center" Width="Auto"
+                     ToolTip="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}">
+
             </TextBox>
-            <Button x:Name="BtnOutputPath" Grid.Column="1" Content="..." Command="{Binding SelectFolderCommand}" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="27"/>
+            <Button x:Name="BtnOutputPath" Grid.Column="1" Content="..." Command="{Binding SelectFolderCommand}"
+                    HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="27" />
         </Grid>
-        <Label x:Name="LblSkipCommertials" Grid.Row="3" Grid.Column="0" Content="Skip commertials" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
-        <CheckBox x:Name="chkSkipCommertials" Grid.Row="3" Grid.Column="1" IsChecked="{Binding IsSkipCommertials}" Content="" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
-        <Label x:Name="lblCurrentSong" Grid.Column="0" Grid.Row="4" Content="Current Song" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
-        
+        <Label x:Name="LblSkipCommertials" Grid.Row="3" Grid.Column="0" Content="Skip commertials"
+               HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" />
+        <CheckBox x:Name="ChkSkipCommertials" Grid.Row="3" Grid.Column="1" IsChecked="{Binding IsSkipCommertials}"
+                  Content="" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" />
+        <Label x:Name="LblCurrentSong" Grid.Column="0" Grid.Row="4" Content="Current Song" HorizontalAlignment="Left"
+               Margin="10,0,0,0" VerticalAlignment="Center" />
+
         <Grid Grid.Row="4" Grid.Column="1" Margin="0,0,10,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="75" />
                 <ColumnDefinition Width="85" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="BtnStartRec" Grid.Column="1" Content="Start" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Width="75" Command="{Binding StartRecordingCommand}"/>
-            <Button x:Name="BtnStopRec" Grid.Column="2" Content="Stop" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="75" RenderTransformOrigin="0.493,0.431" Command="{Binding StopRecordingCommand}" IsEnabled="{Binding }"/>
-            <Label x:Name="LblPlayingSong" Grid.Column="0" Content="{Binding CurrentSong}" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center"/>
+            <Button x:Name="BtnStartRec" Grid.Column="1" Content="Start" HorizontalAlignment="Left" Margin="0,0,0,0"
+                    VerticalAlignment="Center" Width="75" Command="{Binding StartRecordingCommand}" />
+            <Button x:Name="BtnStopRec" Grid.Column="2" Content="Stop" HorizontalAlignment="Left" Margin="10,0,0,0"
+                    VerticalAlignment="Center" Width="75" RenderTransformOrigin="0.493,0.431"
+                    Command="{Binding StopRecordingCommand}" IsEnabled="{Binding }" />
+            <Label x:Name="LblPlayingSong" Grid.Column="0" Content="{Binding CurrentSong}" HorizontalAlignment="Left"
+                   Margin="6,0,0,0" VerticalAlignment="Center" />
         </Grid>
-        <ListBox x:Name="ListRecordedFiles" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Height="Auto" Margin="10,10" VerticalAlignment="Stretch" Width="Auto" ItemsSource="{Binding RecordedFiles}">
+        <ListBox x:Name="ListRecordedFiles" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
+                 HorizontalAlignment="Stretch" Height="Auto" Margin="10,10" VerticalAlignment="Stretch" Width="Auto"
+                 ItemsSource="{Binding RecordedFiles}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -61,7 +84,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
-
     </Grid>
 </Window>

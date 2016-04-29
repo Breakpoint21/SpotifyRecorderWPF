@@ -66,6 +66,7 @@
     </ApplicationDefinition>
     <Compile Include="Helper\Mp3Converter.cs" />
     <Compile Include="ObjectModel\Mp3Tag.cs" />
+    <Compile Include="ObjectModel\ValidationRule.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\SelectFolderCommand.cs" />
@@ -86,6 +87,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Validation\MainViewModelValidation.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

@@ -14,11 +14,10 @@ using SpotifyRecorderWPF.Commands;
 using SpotifyRecorderWPF.Helper;
 using SpotifyRecorderWPF.Logic;
 using SpotifyRecorderWPF.ObjectModel;
-using SpotifyRecorderWPF.Validation;
 
 namespace SpotifyRecorderWPF.ViewModels
 {
-    public class MainViewModel: INotifyPropertyChanged, INotifyDataErrorInfo
+    public class MainViewModel: BaseViewModel, INotifyPropertyChanged
     {
         public List<MMDevice> MmDevices { get;  }
         public List<int> Bitrates { get; }
@@ -44,6 +43,7 @@ namespace SpotifyRecorderWPF.ViewModels
             {
                 if (value == _selectedMmDeviceId) return;
                 _selectedMmDeviceId = value;
+                Validate();
                 OnPropertyChanged();
             }
         }
@@ -79,7 +79,7 @@ namespace SpotifyRecorderWPF.ViewModels
             {
                 if ( value == _outputFolder ) return;
                 _outputFolder = value;
-                _validation.ValidateOutputFolder();
+                Validate();
                 OnPropertyChanged ( );
             }
         }
@@ -121,7 +121,6 @@ namespace SpotifyRecorderWPF.ViewModels
         
         private readonly MMDeviceEnumerator _deviceEnum = new MMDeviceEnumerator();
         private readonly SpotifyRecorder _spotifyRecorder = new SpotifyRecorder();
-        private readonly MainViewModelValidation _validation;
         
         private string _outputFolder;
         private bool _recordingStarted;
@@ -130,11 +129,10 @@ namespace SpotifyRecorderWPF.ViewModels
         private ICommand _stopRecordingCommand;
         private ICommand _selectFolderCommand;
 
-        private object _lock = new object();
+        private readonly object _lock = new object();
 
         public MainViewModel ( )
         {
-            _validation = new MainViewModelValidation(this);
             RecordedFiles = new ObservableCollection< SpotifyWav > ();
             BindingOperations.EnableCollectionSynchronization(RecordedFiles, _lock);
             Bitrates = new List< int > { 96, 128, 160, 192, 320 };
@@ -147,13 +145,22 @@ namespace SpotifyRecorderWPF.ViewModels
             _spotifyRecorder.TrackRecorded += ( sender, e ) => { RecordedFiles.Add ( e.File ); };
             
             Settings.Load(this);
+
+            InitializeValidation ( );
+        }
+
+        private void InitializeValidation ( )
+        {
+            Rules.Add(new ValidationRule(nameof(OutputFolder), "Output Folder can not be empty!", () => string.IsNullOrEmpty(OutputFolder)));
+            Rules.Add(new ValidationRule(nameof(OutputFolder), "Output Folder is not a valid Folder!", () => !Directory.Exists(OutputFolder)));
+            Rules.Add(new ValidationRule(nameof(SelectedMmDeviceId), "Recording Device must be selected!", () => string.IsNullOrEmpty(SelectedMmDeviceId)));
         }
 
         public void StartRecording ( )
         {
-            _validation.ValidateOutputFolder( );
+            Validate();
 
-            if ( !_validationErrors.ContainsKey("OutputFolder") )
+            if ( !HasErrors )
             {
                 _spotifyRecorder.StartRecoding(SelectedMmDeviceId, OutputFolder, IsSkipCommertials, SelectedBitrate);
                 RecordingStarted = _spotifyRecorder.IsRecording;
@@ -179,25 +186,6 @@ namespace SpotifyRecorderWPF.ViewModels
         protected virtual void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this, new PropertyChangedEventArgs ( propertyName ) );
-        }
-
-        private readonly Dictionary<string, ICollection<string>> _validationErrors = new Dictionary<string, ICollection<string>>();
-        
-        public IEnumerable GetErrors ( string propertyName )
-        {
-            if (string.IsNullOrEmpty(propertyName)
-            || !_validationErrors.ContainsKey(propertyName))
-                return null;
-
-            return _validationErrors[propertyName];
-        }
-
-        public bool HasErrors { get { return _validationErrors.Count > 0; } }
-        public event EventHandler< DataErrorsChangedEventArgs > ErrorsChanged;
-
-        public void RaiseErrorsChanged([CallerMemberName]  string propertyName = null)
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
     }
 }
