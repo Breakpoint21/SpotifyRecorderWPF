@@ -28,7 +28,7 @@ namespace SpotifyRecorderWPF.Helper
                 };
                 
                 process.Start();
-                process.WaitForExit(20000);
+                process.WaitForExit(200000);
                 if (!process.HasExited)
                     process.Kill();
                 File.Delete(wavFilePath);
