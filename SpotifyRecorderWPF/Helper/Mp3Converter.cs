@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using SpotifyRecorderWPF.ObjectModel;
@@ -31,7 +32,15 @@ namespace SpotifyRecorderWPF.Helper
                 process.WaitForExit(200000);
                 if (!process.HasExited)
                     process.Kill();
-                File.Delete(wavFilePath);
+
+                try
+                {
+                    File.Delete(wavFilePath);
+                }
+                catch ( Exception e )
+                {
+                    Console.WriteLine ( e );
+                }
             } );
         }
     }

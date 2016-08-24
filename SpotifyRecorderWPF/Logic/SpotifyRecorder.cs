@@ -51,7 +51,14 @@ namespace SpotifyRecorderWPF.Logic
             }
             else
             {
-                spotifyWav?.WavFile.Delete ( );
+                try
+                {
+                    spotifyWav?.WavFile.Delete ( );
+                }
+                catch ( Exception e )
+                {
+                    Console.WriteLine ( e );
+                }
             }
         }
 
